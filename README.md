@@ -1,1 +1,1 @@
-# huma-get-ledger-entry-demo
+# Huma Soroban Defender

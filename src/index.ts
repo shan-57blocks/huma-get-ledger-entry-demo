@@ -41,6 +41,10 @@ const extendTTL = async (
     .build();
 
   const preparedTransaction = await server.prepareTransaction(tx);
+  const simRes = await server.simulateTransaction(preparedTransaction);
+  console.log('Simulation result', JSON.stringify(simRes));
+  console.log('****************');
+  console.log('****************');
   preparedTransaction.sign(signer);
 
   const sendResponse = await server.sendTransaction(preparedTransaction);

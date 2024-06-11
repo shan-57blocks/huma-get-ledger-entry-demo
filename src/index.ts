@@ -31,7 +31,7 @@ const extendTTL = async (
   const account = await server.getAccount(signer.publicKey());
   const tx = new TransactionBuilder(account, { fee: BASE_FEE })
     .setNetworkPassphrase(Networks.TESTNET)
-    .setSorobanData(new SorobanDataBuilder().setReadWrite([ledgerKeys]).build())
+    .setSorobanData(new SorobanDataBuilder().setReadOnly([ledgerKeys]).build())
     .addOperation(
       Operation.extendFootprintTtl({
         extendTo: 3110400 - 1
@@ -39,6 +39,22 @@ const extendTTL = async (
     )
     .setTimeout(30)
     .build();
+
+  const sim = await server.simulateTransaction(tx);
+
+  // Other failures are out of scope of this tutorial.
+  if (!SorobanRpc.Api.isSimulationSuccess(sim)) {
+    throw sim;
+  }
+
+  console.log(
+    'SorobanRpc.Api.isSimulationRestore(sim)',
+    SorobanRpc.Api.isSimulationRestore(sim)
+  );
+
+  // If simulation didn't fail, we don't need to restore anything! Just send it.
+  // if (!SorobanRpc.Api.isSimulationRestore(sim)) {
+  // }
 
   const preparedTransaction = await server.prepareTransaction(tx);
   preparedTransaction.sign(signer);
